@@ -203,9 +203,12 @@ function calenderTemp(month, i) {
 }
 months.forEach((month, i) => {
   const card = calenderTemp(month, i);
-  select.one("[data-show-months]").innerHTML += card;
+  const showMonthsElement = select.one("[data-show-months]");
+  showMonthsElement && (showMonthsElement.innerHTML += card);
   database.push({ altEng: month.altEng, calenderTemp: card });
 });
-select.one("[data-current-ban-month]").innerHTML = database.filter(
-  (itm) => itm.altEng == currentMonth.altEng
-)[0].calenderTemp;
+const currentMonthElement = select.one("[data-current-ban-month]");
+currentMonthElement &&
+  (currentMonthElement.innerHTML = database.filter(
+    (itm) => itm.altEng == currentMonth.altEng
+  )[0].calenderTemp);
