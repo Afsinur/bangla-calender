@@ -1,6 +1,20 @@
 let countAgain = 0;
 let totalDatesAdded = 0;
 let dayIndex = 0;
+const engMonths = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 const months = [
   { title: "বৈশাখ", totalDays: 31, altEng: "April", altEngTotalDays: 30 },
   { title: "জ্যৈষ্ঠ", totalDays: 31, altEng: "May", altEngTotalDays: 31 },
@@ -59,6 +73,7 @@ const select = {
     return document.querySelector(sl);
   },
 };
+const database = [];
 const components = {
   title(month, i) {
     let orMonth = months[months.length == i + 1 ? 0 : i + 1];
@@ -135,7 +150,9 @@ const components = {
 
       htmls += `
           <div class="border flex flex-col p-2">
-              <p class="text-xl font-semibold text-gray-600">${i + 1}</p>
+              <p class="text-xl font-semibold text-gray-600 text-center">${
+                i + 1
+              }</p>
 
               <p class="self-end text-sm font-semibold text-gray-400 flex items-center justify-between w-full">${insideHtmls}</p>
           </div>
@@ -149,6 +166,9 @@ const components = {
     return htmls;
   },
 };
+const currentMonth = months.filter(
+  (month) => month.altEng == engMonths[new Date().getMonth()]
+)[0];
 function isLeapYear(year) {
   if (year % 4 === 0) {
     if (year % 100 === 0) {
@@ -164,20 +184,28 @@ function isLeapYear(year) {
     return false;
   }
 }
+function calenderTemp(month, i) {
+  return `
+    <div class="border px-4 py-2">
+        <div>
+            ${components.title(month, i)}
+        </div>
+
+        <div class="grid gap-2 border grid-cols-7 p-2">
+            ${components.weeks(weekDays)}
+        </div>
+
+        <div class="grid gap-2 border grid-cols-7 p-2">
+            ${components.dates(month, i)}
+        </div>
+    </div>
+  `;
+}
 months.forEach((month, i) => {
-  select.one("[data-show-months]").innerHTML += `
-          <div class="border px-4 py-2">
-              <div>
-                  ${components.title(month, i)}
-              </div>
-
-              <div class="grid gap-2 border grid-cols-7 p-2">
-                  ${components.weeks(weekDays)}
-              </div>
-
-              <div class="grid gap-2 border grid-cols-7 p-2">
-                  ${components.dates(month, i)}
-              </div>
-          </div>
-      `;
+  const card = calenderTemp(month, i);
+  select.one("[data-show-months]").innerHTML += card;
+  database.push({ altEng: month.altEng, calenderTemp: card });
 });
+select.one("[data-current-ban-month]").innerHTML = database.filter(
+  (itm) => itm.altEng == currentMonth.altEng
+)[0].calenderTemp;
