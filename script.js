@@ -1,5 +1,6 @@
 let countAgain = 0;
 let totalDatesAdded = 0;
+let totalTilesAdded = 0;
 let dayIndex = 0;
 const engMonths = [
   "January",
@@ -59,6 +60,23 @@ const months = [
   },
   { title: "চৈত্র", totalDays: 30, altEng: "March", altEngTotalDays: 31 },
 ];
+console.log(
+  months
+    .filter((month) => {
+      if (
+        month.altEng == "January" ||
+        month.altEng == "February" ||
+        month.altEng == "March" ||
+        month.altEng == "April"
+      ) {
+        return month;
+      }
+    })
+    .reduce((acc, obj) => {
+      acc += obj.altEngTotalDays;
+      return acc;
+    }, 0)
+);
 const weekDays = [
   { title: "রবি" },
   { title: "সোম" },
@@ -103,6 +121,7 @@ const components = {
   dates(month, _i) {
     let orMonth = months[months.length == _i + 1 ? 0 : _i + 1];
     let htmls = ``;
+    const dateBoxes = [];
 
     function reCount() {
       countAgain++;
@@ -114,6 +133,7 @@ const components = {
 
       for (let i = 0; i < dayIndex; i++) {
         totalDatesAdded++;
+        totalTilesAdded++;
 
         let insideHtmls = ``;
         insideHtmls += ``;
@@ -130,22 +150,23 @@ const components = {
 
     for (let i = 0; i < month.totalDays; i++) {
       totalDatesAdded++;
+      totalTilesAdded++;
+
       dayIndex = totalDatesAdded % 7;
+
+      let forEnDate =
+        i + 14 > month.altEngTotalDays
+          ? reCount()
+          : _i > 0
+          ? reCount()
+          : i + 14;
+
+      let forEnMonth = i + 14 > forEnDate ? orMonth.altEng : month.altEng;
 
       let insideHtmls = ``;
       insideHtmls += `
-                <span class="">${
-                  i + 14 > month.altEngTotalDays
-                    ? orMonth.altEng.slice(0, 3)
-                    : month.altEng.slice(0, 3)
-                }</span>
-                <span>${
-                  i + 14 > month.altEngTotalDays
-                    ? reCount()
-                    : _i > 0
-                    ? reCount()
-                    : i + 14
-                }</span>
+                <span class="">${forEnMonth.slice(0, 3)}</span>
+                <span>${forEnDate}</span>
               `;
 
       htmls += `
@@ -158,12 +179,19 @@ const components = {
           </div>
           `;
 
+      dateBoxes.push({
+        bnDate: i + 1,
+        engMonth: forEnMonth,
+        engMonthSliced: forEnMonth.slice(0, 3),
+        engDate: forEnDate,
+      });
+
       if (countAgain + 1 > month.altEngTotalDays) {
         countAgain = 0;
       }
     }
 
-    return htmls;
+    return { htmls, dateBoxes };
   },
 };
 const currentMonth = months.filter(
@@ -185,30 +213,56 @@ function isLeapYear(year) {
   }
 }
 function calenderTemp(month, i) {
-  return `
-    <div class="border px-4 py-2">
-        <div>
-            ${components.title(month, i)}
-        </div>
+  const dates = components.dates(month, i);
+  return {
+    html: `
+  <div class="border px-4 py-2">
+      <div>
+          ${components.title(month, i)}
+      </div>
 
-        <div class="grid gap-2 border grid-cols-7 p-2">
-            ${components.weeks(weekDays)}
-        </div>
+      <div class="grid gap-2 border grid-cols-7 p-2">
+          ${components.weeks(weekDays)}
+      </div>
 
-        <div class="grid gap-2 border grid-cols-7 p-2">
-            ${components.dates(month, i)}
-        </div>
-    </div>
-  `;
+      <div class="grid gap-2 border grid-cols-7 p-2">
+          ${dates.htmls}
+      </div>
+  </div>
+`,
+    dateBox: dates.dateBoxes,
+  };
+}
+function showToday() {
+  let today = database
+    .filter((obj) => obj.altEng == currentMonth.altEng)[0]
+    .dateBox.filter((box) => box.engDate == new Date().getDate())[0];
+
+  currentBnDateElement.innerHTML = `
+      <div class="border flex flex-col p-2 w-fit">
+          <p class="text-xl font-semibold text-gray-600 text-center">${today.bnDate}</p>
+
+          <p class="self-end text-sm font-semibold text-gray-400 flex gap-8 items-center justify-between w-full">
+              <span class="">${today.engMonthSliced}</span>
+              <span>${today.engDate}</span>
+          </p>
+      </div>
+    `;
 }
 months.forEach((month, i) => {
   const card = calenderTemp(month, i);
   const showMonthsElement = select.one("[data-show-months]");
-  showMonthsElement && (showMonthsElement.innerHTML += card);
-  database.push({ altEng: month.altEng, calenderTemp: card });
+  showMonthsElement && (showMonthsElement.innerHTML += card.html);
+  database.push({
+    altEng: month.altEng,
+    calenderTemp: card.html,
+    dateBox: card.dateBox,
+  });
 });
 const currentMonthElement = select.one("[data-current-ban-month]");
 currentMonthElement &&
   (currentMonthElement.innerHTML = database.filter(
     (itm) => itm.altEng == currentMonth.altEng
   )[0].calenderTemp);
+const currentBnDateElement = select.one("[data-current-ban-date]");
+currentBnDateElement && showToday();
