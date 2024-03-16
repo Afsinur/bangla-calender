@@ -359,6 +359,17 @@ function currentMonthFunctionalities() {
     </div>
   `;
   } else {
-    return `${currentMonth.altEng}`;
+    let today = database
+      .filter((obj) => obj.altEng == currentMonth.altEng)[0]
+      .dateBox.filter((box) => box.engDate == new Date().getDate())[0];
+
+    todayDate.push({
+      bnDate: today.bnDate,
+      engMonthSliced: today.engMonthSliced,
+      engDate: today.engDate,
+    });
+
+    return database.filter((itm) => itm.altEng == currentMonth.altEng)[0]
+      .calenderTemp;
   }
 }
