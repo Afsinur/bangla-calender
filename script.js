@@ -54,9 +54,9 @@ const months = [
   { title: "মাঘ", totalDays: 30, altEng: "January", altEngTotalDays: 31 },
   {
     title: "ফাল্গুন",
-    totalDays: isLeapYear(new Date().getFullYear()) ? 30 : 29,
+    totalDays: isLeapYear(new Date().getFullYear() + 1) ? 30 : 29,
     altEng: "February",
-    altEngTotalDays: isLeapYear(new Date().getFullYear()) ? 29 : 28,
+    altEngTotalDays: isLeapYear(new Date().getFullYear() + 1) ? 29 : 28,
   },
   { title: "চৈত্র", totalDays: 30, altEng: "March", altEngTotalDays: 31 },
 ];
