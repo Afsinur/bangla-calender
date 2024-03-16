@@ -98,9 +98,16 @@ const components = {
 
     return `
           <div class="p-2 text-center text-xl font-semibold text-gray-600">
-              <p>${month.title}-${new Date().getFullYear() - 593} - ${
+              <p>${month.title}-${new Date().getFullYear() - 594} - ${
       month.altEng
-    }/${orMonth.altEng}</p>
+    }/${orMonth.altEng} ${
+      month.altEng == "December" ||
+      month.altEng == "January" ||
+      month.altEng == "February" ||
+      month.altEng == "March"
+        ? `- ${new Date().getFullYear()}-${new Date().getFullYear() + 1}`
+        : ``
+    }</p>
           </div>
           `;
   },
