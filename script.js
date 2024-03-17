@@ -16,15 +16,6 @@ const engMonths = [
   "November",
   "December",
 ];
-const weekDays = [
-  { title: "রবি" },
-  { title: "সোম" },
-  { title: "মঙ্গল" },
-  { title: "বুধ" },
-  { title: "বৃহঃ" },
-  { title: "শুক্র" },
-  { title: "শনি" },
-];
 const select = {
   one(sl) {
     return document.querySelector(sl);
@@ -52,7 +43,9 @@ const components = {
           </div>
           `;
   },
-  weeks(days) {
+  weeks(thisYearInfo) {
+    let days = setWeeks(thisYearInfo.year);
+
     let htmls = ``;
 
     for (let i = 0; i < days.length; i++) {
@@ -217,9 +210,8 @@ function currentMonthFunctionalities() {
   thisYearInfo.months.forEach((month, i) => {
     const card = calenderTemp(month, i, thisYearInfo);
 
-    const showMonthsElement = select.one("[data-show-months]");
-
-    showMonthsElement && (showMonthsElement.innerHTML += card.html);
+    // const showMonthsElement = select.one("[data-show-months]");
+    // showMonthsElement && (showMonthsElement.innerHTML += card.html);
 
     month.altEng == "December";
     month.altEng == "January" ||
@@ -273,7 +265,7 @@ function calenderTemp(month, i, thisYearInfo) {
       </div>
 
       <div class="grid gap-2 border grid-cols-7 p-2">
-          ${components.weeks(weekDays)}
+          ${components.weeks(thisYearInfo)}
       </div>
 
       <div class="grid gap-2 border grid-cols-7 p-2">
@@ -315,6 +307,40 @@ function resetControls() {
   countAgain = 0;
   totalDatesAdded = 0;
   dayIndex = 0;
+}
+function setWeeks(year) {
+  let maxPush = 0;
+  let indexDay = new Date(`${year}-04-14`).getDay();
+
+  let weekDays = [];
+  let weeksGlobal = [
+    "রবি",
+    "সোম",
+    "মঙ্গল",
+    "বুধ",
+    "বৃহঃ",
+    "শুক্র",
+    "শনি",
+    "রবি",
+    "সোম",
+    "মঙ্গল",
+    "বুধ",
+    "বৃহঃ",
+    "শুক্র",
+  ];
+
+  for (let i = indexDay; i < weeksGlobal.length; i++) {
+    if (maxPush < 7) {
+      maxPush++;
+
+      const el = weeksGlobal[i];
+      weekDays.push({ title: el });
+    } else {
+      break;
+    }
+  }
+
+  return weekDays;
 }
 currentMonthFunctionalities();
 showToday(todayDate);
