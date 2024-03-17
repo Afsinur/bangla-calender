@@ -1,4 +1,4 @@
-let currentMonthTemp;
+let currentMonthInfo = {};
 (() => {
   let countAgain = 0;
   let totalDatesAdded = 0;
@@ -54,7 +54,7 @@ let currentMonthTemp;
             month.altEng == "February" ||
             month.altEng == "March"
           ? `- ${thisYearInfo.year + 1}`
-          : ``
+          : `- ${thisYearInfo.year}`
       }</p>
           </div>
           `;
@@ -190,12 +190,14 @@ let currentMonthTemp;
           calenderTemp: card.html,
           dateBox: card.dateBox,
           year: thisYearInfo.year + 1,
+          title: month.title,
         })
       : database.push({
           altEng: month.altEng,
           calenderTemp: card.html,
           dateBox: card.dateBox,
           year: thisYearInfo.year,
+          title: month.title,
         });
   });
   function getMonths(year) {
@@ -264,23 +266,28 @@ let currentMonthTemp;
             calenderTemp: card.html,
             dateBox: card.dateBox,
             year: thisYearInfo.year + 1,
+            title: month.title,
           })
         : database.push({
             altEng: month.altEng,
             calenderTemp: card.html,
             dateBox: card.dateBox,
             year: thisYearInfo.year,
+            title: month.title,
           });
     });
 
-    currentMonthTemp = database.filter(
+    let dbObj = database.filter(
       (itm) =>
         itm.altEng == currentMonth.altEng &&
         itm.year == new Date().getFullYear()
-    )[0].calenderTemp;
+    )[0];
+
+    currentMonthInfo.bnMonth = dbObj.title;
+    currentMonthInfo.bnYear = thisYearInfo.year - 594;
 
     const currentMonthElement = select.one("[data-current-ban-month]");
-    currentMonthElement && (currentMonthElement.innerHTML = currentMonthTemp);
+    currentMonthElement && (currentMonthElement.innerHTML = dbObj.calenderTemp);
   }
   function isLeapYear(year) {
     if (year % 4 === 0) {
@@ -327,6 +334,8 @@ let currentMonthTemp;
           itm.year == new Date().getFullYear()
       )[0]
       .dateBox.filter((box) => box.engDate == new Date().getDate())[0];
+
+    currentMonthInfo.bnDate = today.bnDate;
 
     const currentBnDateElement = select.one("[data-current-ban-date]");
 
