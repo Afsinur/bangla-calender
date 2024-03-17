@@ -179,31 +179,6 @@ let currentBnYear;
   const currentMonth = thisYearInfo.months.filter(
     (month) => month.altEng == engMonths[new Date().getMonth()]
   )[0];
-  thisYearInfo.months.forEach((month, i) => {
-    const card = calenderTemp(month, i, thisYearInfo);
-
-    const showMonthsElement = select.one("[data-show-months]");
-    showMonthsElement && (showMonthsElement.innerHTML += card.html);
-
-    month.altEng == "December";
-    month.altEng == "January" ||
-    month.altEng == "February" ||
-    month.altEng == "March"
-      ? database.push({
-          altEng: month.altEng,
-          calenderTemp: card.html,
-          dateBox: card.dateBox,
-          year: thisYearInfo.year + 1,
-          title: month.title,
-        })
-      : database.push({
-          altEng: month.altEng,
-          calenderTemp: card.html,
-          dateBox: card.dateBox,
-          year: thisYearInfo.year,
-          title: month.title,
-        });
-  });
   function getMonths(year) {
     const months = [
       { title: "বৈশাখ", totalDays: 31, altEng: "April", altEngTotalDays: 30 },
@@ -258,8 +233,8 @@ let currentBnYear;
     thisYearInfo.months.forEach((month, i) => {
       const card = calenderTemp(month, i, thisYearInfo);
 
-      // const showMonthsElement = select.one("[data-show-months]");
-      // showMonthsElement && (showMonthsElement.innerHTML += card.html);
+      const showMonthsElement = select.one("[data-show-months]");
+      showMonthsElement && (showMonthsElement.innerHTML += card.html);
 
       month.altEng == "December";
       month.altEng == "January" ||
