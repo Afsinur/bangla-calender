@@ -3,7 +3,21 @@ let currentMonthTemp;
   let countAgain = 0;
   let totalDatesAdded = 0;
   let dayIndex = 0;
-  const todayDate = [{ bnDate: "", engMonthSliced: "", engDate: "" }];
+  let weeksGlobal = [
+    "রবি",
+    "সোম",
+    "মঙ্গল",
+    "বুধ",
+    "বৃহঃ",
+    "শুক্র",
+    "শনি",
+    "রবি",
+    "সোম",
+    "মঙ্গল",
+    "বুধ",
+    "বৃহঃ",
+    "শুক্র",
+  ];
   const engMonths = [
     "January",
     "February",
@@ -45,9 +59,8 @@ let currentMonthTemp;
           </div>
           `;
     },
-    weeks(thisYearInfo) {
-      let days = setWeeks(thisYearInfo.year);
-
+    weeks() {
+      let days = setWeeks();
       let htmls = ``;
 
       for (let i = 0; i < days.length; i++) {
@@ -62,6 +75,14 @@ let currentMonthTemp;
       return htmls;
     },
     dates(month, _i, thisYearInfo) {
+      let indexDay = new Date(`${thisYearInfo.year}-04-14`).getDay();
+
+      if (indexDay != 0) {
+        console.log(indexDay);
+      } else {
+        console.log(indexDay);
+      }
+
       let orMonth =
         thisYearInfo.months[thisYearInfo.months.length == _i + 1 ? 0 : _i + 1];
       let htmls = ``;
@@ -83,6 +104,25 @@ let currentMonthTemp;
               <p class="self-end text-sm font-semibold text-gray-400 flex items-center justify-between w-full">${insideHtmls}</p>
           </div>
           `;
+        }
+      } else {
+        if (indexDay != 0) {
+          totalDatesAdded = 0;
+
+          for (let i = 0; i < indexDay; i++) {
+            totalDatesAdded++;
+
+            let insideHtmls = ``;
+            insideHtmls += ``;
+
+            htmls += `
+          <div class="border flex flex-col p-2 invisible">
+              <p class="text-xl font-semibold text-gray-600"></p>
+
+              <p class="self-end text-sm font-semibold text-gray-400 flex items-center justify-between w-full">${insideHtmls}</p>
+          </div>
+          `;
+          }
         }
       }
 
@@ -137,8 +177,8 @@ let currentMonthTemp;
   )[0];
   thisYearInfo.months.forEach((month, i) => {
     const card = calenderTemp(month, i, thisYearInfo);
-    const showMonthsElement = select.one("[data-show-months]");
 
+    const showMonthsElement = select.one("[data-show-months]");
     showMonthsElement && (showMonthsElement.innerHTML += card.html);
 
     month.altEng == "December";
@@ -268,7 +308,7 @@ let currentMonthTemp;
       </div>
 
       <div class="grid gap-2 border grid-cols-7 p-2">
-          ${components.weeks(thisYearInfo)}
+          ${components.weeks()}
       </div>
 
       <div class="grid gap-2 border grid-cols-7 p-2">
@@ -311,26 +351,12 @@ let currentMonthTemp;
     totalDatesAdded = 0;
     dayIndex = 0;
   }
-  function setWeeks(year) {
+  function setWeeks() {
     let maxPush = 0;
-    let indexDay = new Date(`${year}-04-14`).getDay();
+    //let indexDay = new Date(`${year}-04-14`).getDay();
+    let indexDay = 0;
 
     let weekDays = [];
-    let weeksGlobal = [
-      "রবি",
-      "সোম",
-      "মঙ্গল",
-      "বুধ",
-      "বৃহঃ",
-      "শুক্র",
-      "শনি",
-      "রবি",
-      "সোম",
-      "মঙ্গল",
-      "বুধ",
-      "বৃহঃ",
-      "শুক্র",
-    ];
 
     for (let i = indexDay; i < weeksGlobal.length; i++) {
       if (maxPush < 7) {
@@ -346,5 +372,5 @@ let currentMonthTemp;
     return weekDays;
   }
   currentMonthFunctionalities();
-  showToday(todayDate);
+  showToday();
 })();
