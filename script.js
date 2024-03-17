@@ -1,5 +1,9 @@
-let currentMonthInfo = {};
+let currentBnDate;
+let currentBnMonth;
+let currentBnYear;
 (() => {
+  let currentMonthInfo = {};
+  let bnYearDiff = 593;
   let countAgain = 0;
   let totalDatesAdded = 0;
   let dayIndex = 0;
@@ -45,9 +49,9 @@ let currentMonthInfo = {};
 
       return `
           <div class="p-2 text-center text-xl font-semibold text-gray-600">
-              <p>${month.title}-${thisYearInfo.year - 594} - ${month.altEng}/${
-        orMonth.altEng
-      } ${
+              <p>${month.title}-${thisYearInfo.year - bnYearDiff} - ${
+        month.altEng
+      }/${orMonth.altEng} ${
         month.altEng == "December"
           ? `- ${thisYearInfo.year}-${thisYearInfo.year + 1}`
           : month.altEng == "January" ||
@@ -284,7 +288,7 @@ let currentMonthInfo = {};
     )[0];
 
     currentMonthInfo.bnMonth = dbObj.title;
-    currentMonthInfo.bnYear = thisYearInfo.year - 594;
+    currentMonthInfo.bnYear = thisYearInfo.year - bnYearDiff;
 
     const currentMonthElement = select.one("[data-current-ban-month]");
     currentMonthElement && (currentMonthElement.innerHTML = dbObj.calenderTemp);
@@ -336,6 +340,10 @@ let currentMonthInfo = {};
       .dateBox.filter((box) => box.engDate == new Date().getDate())[0];
 
     currentMonthInfo.bnDate = today.bnDate;
+
+    currentBnDate = currentMonthInfo.bnDate;
+    currentBnMonth = currentMonthInfo.bnMonth;
+    currentBnYear = currentMonthInfo.bnYear;
 
     const currentBnDateElement = select.one("[data-current-ban-date]");
 
