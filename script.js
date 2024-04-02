@@ -81,12 +81,6 @@ let currentBnYear;
     dates(month, _i, thisYearInfo) {
       let indexDay = new Date(`${thisYearInfo.year}-04-14`).getDay();
 
-      if (indexDay != 0) {
-        console.log(indexDay);
-      } else {
-        console.log(indexDay);
-      }
-
       let orMonth =
         thisYearInfo.months[thisYearInfo.months.length == _i + 1 ? 0 : _i + 1];
       let htmls = ``;
@@ -256,11 +250,18 @@ let currentBnYear;
           });
     });
 
-    let dbObj = database.filter(
-      (itm) =>
-        itm.altEng == currentMonth.altEng &&
-        itm.year == new Date().getFullYear()
-    )[0];
+    let dbObj = database
+      .reduce((arr, itm) => {
+        itm.dateBox.forEach((itm2) =>
+          arr.push({ ...itm2, year: itm.year, calenderTemp: itm.calenderTemp })
+        );
+        return arr;
+      }, [])
+      .filter(
+        (itm) =>
+          itm.engDate == new Date().getDate() &&
+          itm.engMonth == engMonths[new Date().getMonth()]
+      )[0];
 
     currentMonthInfo.bnMonth = dbObj.title;
     currentMonthInfo.bnYear = thisYearInfo.year - bnYearDiff;
@@ -307,14 +308,25 @@ let currentBnYear;
   }
   function showToday() {
     let today = database
+      .reduce((arr, itm) => {
+        itm.dateBox.forEach((itm2) =>
+          arr.push({
+            ...itm2,
+            title: itm.title,
+            year: itm.year,
+            calenderTemp: itm.calenderTemp,
+          })
+        );
+        return arr;
+      }, [])
       .filter(
         (itm) =>
-          itm.altEng == currentMonth.altEng &&
-          itm.year == new Date().getFullYear()
-      )[0]
-      .dateBox.filter((box) => box.engDate == new Date().getDate())[0];
+          itm.engDate == new Date().getDate() &&
+          itm.engMonth == engMonths[new Date().getMonth()]
+      )[0];
 
     currentMonthInfo.bnDate = today.bnDate;
+    currentMonthInfo.bnMonth = today.title;
 
     currentBnDate = currentMonthInfo.bnDate;
     currentBnMonth = currentMonthInfo.bnMonth;
