@@ -169,10 +169,6 @@ let currentBnYear;
       return { htmls, dateBoxes };
     },
   };
-  const thisYearInfo = getMonths(new Date().getFullYear());
-  const currentMonth = thisYearInfo.months.filter(
-    (month) => month.altEng == engMonths[new Date().getMonth()]
-  )[0];
   function getMonths(year) {
     const months = [
       { title: "বৈশাখ", totalDays: 31, altEng: "April", altEngTotalDays: 30 },
@@ -223,7 +219,7 @@ let currentBnYear;
   function currentMonthFunctionalities() {
     resetControls();
 
-    const thisYearInfo = getMonths(new Date().getFullYear() - 1);
+    const thisYearInfo = getMonths(new Date().getFullYear());
     thisYearInfo.months.forEach((month, i) => {
       const card = calenderTemp(month, i, thisYearInfo);
 
