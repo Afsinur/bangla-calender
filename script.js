@@ -353,7 +353,6 @@ let currentBnYear;
   }
   function setWeeks() {
     let maxPush = 0;
-    //let indexDay = new Date(`${year}-04-14`).getDay();
     let indexDay = 0;
 
     let weekDays = [];
