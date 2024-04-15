@@ -219,7 +219,11 @@ let currentBnYear;
   function currentMonthFunctionalities() {
     resetControls();
 
-    const thisYearInfo = getMonths(new Date().getFullYear());
+    const thisYearInfo = getMonths(
+      new Date().getMonth() < 3
+        ? new Date().getFullYear() - 1
+        : new Date().getFullYear()
+    ); //new Date().getFullYear()
     thisYearInfo.months.forEach((month, i) => {
       const card = calenderTemp(month, i, thisYearInfo);
 
